@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aplica con tu crónica · Perpetuo</title>
+<meta name="description" content="Convocatoria permanente de Perpetuo para crónicas de largo aliento. Aplica con tu idea: no necesitas tener el texto escrito.">
+<meta property="og:title" content="Aplica con tu crónica · Perpetuo">
+<meta property="og:description" content="Cuéntanos qué historia quieres contar, por qué ahora y qué quedará de ella en cien años.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js");</script>
+<style>
+:root{
+  --logo:url("assets/logo.webp");
+  --azul:#074990; --rojo:#e2543b; --lima:#C3D73A; --tinta:#0D1114; --papel:#FAF6F1;
+  --papel-2:#F0E9DE; --papel-3:#E6DDCF; --gris:rgba(13,17,20,.6); --linea:rgba(13,17,20,.14);
+  --fondo:var(--azul);
+  --sans:"Hanken Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --rebote:cubic-bezier(.34,1.56,.64,1);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --fondo:#04305f; } }
+:root[data-theme="dark"]{ --fondo:#04305f; }
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; }
+body{
+  background:var(--fondo); color:var(--tinta);
+  font-family:var(--sans); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; min-height:100vh;
+}
+body::before{ /* grano de papel sobre el azul */
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.2; mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+button,input,textarea{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--lima); outline-offset:3px; }
+a{ color:inherit; }
+
+main{ position:relative; z-index:1; max-width:1040px; margin:0 auto; padding:32px 24px 72px; }
+@media (max-width:560px){ main{ padding:24px 16px 56px; } }
+
+/* ---------------- PORTADA ---------------- */
+.top{ display:flex; justify-content:space-between; align-items:center; gap:16px; color:var(--papel); }
+.logo{ display:block; width:156px; aspect-ratio:900/153; background:var(--papel);
+  -webkit-mask:var(--logo) left center/contain no-repeat; mask:var(--logo) left center/contain no-repeat; }
+.top a.site{ font-size:14px; font-weight:600; text-decoration:none; opacity:.8; border-bottom:1.5px solid rgba(250,246,241,.4); }
+.top a.site:hover{ opacity:1; }
+
+.hero{ position:relative; color:var(--papel); padding:84px 0 64px; }
+.kicker{ font-size:12.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase; color:var(--lima); margin:0; }
+.hero h1{ margin:0; font-size:clamp(46px,9.4vw,118px); line-height:.9; font-weight:900; letter-spacing:-.055em; max-width:8.6ch; }
+.hero .lead{ margin:24px 0 0; font-size:clamp(17px,1.9vw,20px); line-height:1.45; max-width:44ch; color:rgba(250,246,241,.82); }
+@media (max-width:820px){ .hero{ padding:48px 0 48px; } }
+
+.facts{ display:grid; grid-template-columns:repeat(4,1fr); margin:44px 0 0; border-top:1px solid rgba(250,246,241,.28); }
+.facts div{ padding:16px 16px 0 0; }
+.facts dt{ font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(250,246,241,.6); }
+.facts dd{ margin:4px 0 0; font-size:17px; font-weight:800; letter-spacing:-.01em; }
+@media (max-width:720px){ .facts{ grid-template-columns:1fr 1fr; } .facts div{ padding-bottom:4px; } }
+
+/* entrada de la portada: las palabras suben, luego el resto */
+.js .hero h1 .w{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.1em; margin-bottom:-.1em; }
+.js .hero h1 .w > span{ display:inline-block; transform:translateY(110%); animation:sube .9s var(--ease-out) forwards; animation-delay:calc(.15s + var(--i) * 75ms); }
+@keyframes sube{ to{ transform:none; } }
+.js .facts div{ opacity:0; animation:aparece .8s var(--ease-out) forwards; animation-delay:calc(1.6s + var(--i) * 90ms); }
+@keyframes aparece{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:none; } }
+/* la Exclamación: la mueve un motor con resortes y gravedad (ver script), aquí solo su armado */
+.escena{ position:relative; }
+.excl{ position:absolute; right:2%; bottom:-4px; width:clamp(84px,15vw,190px); cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; }
+.js .excl{ visibility:hidden; }
+.js .excl.vivo{ visibility:visible; }
+.excl-mov{ position:relative; z-index:1; will-change:transform; }
+.excl-cuerpo{ transform-origin:50% 100%; will-change:transform; }
+.excl .bicho{ display:block; position:relative; width:100%; aspect-ratio:220/300;
+  filter:drop-shadow(4px 0 0 var(--papel)) drop-shadow(-4px 0 0 var(--papel)) drop-shadow(0 4px 0 var(--papel)) drop-shadow(0 -4px 0 var(--papel)) drop-shadow(0 18px 16px rgba(0,0,0,.35)); }
+.excl .bicho img{ position:absolute; inset:0; width:100%; height:100%; }
+.excl .bicho .c{ transform-origin:50% 100%; }
+.excl .bicho .p{ transform-origin:var(--ox) var(--oy); }
+.sombra{ position:absolute; left:18%; right:18%; bottom:-4px; height:10px; border-radius:50%; background:rgba(0,0,0,.35); filter:blur(3px); will-change:transform, opacity; }
+.polvo{ position:absolute; z-index:0; bottom:0; border-radius:50%; background:var(--papel); pointer-events:none; }
+.chispa{ position:absolute; z-index:2; top:0; left:50%; font-weight:900; color:var(--lima); pointer-events:none; line-height:1; }
+@media (max-width:820px){ .excl{ right:0; bottom:-2px; } }
+@media (max-width:520px){ .hero h1{ font-size:min(10.6vw,52px); } .excl{ width:72px; } }
+
+/* ---------------- HOJA ---------------- */
+.sheet{
+  position:relative; background:var(--papel); border-radius:3px;
+  box-shadow:0 1px 0 rgba(255,255,255,.5) inset, 0 40px 70px -28px rgba(0,0,0,.55), 0 12px 24px -12px rgba(0,0,0,.3);
+}
+.js .sheet{ opacity:0; transform:translateY(40px); animation:hoja 1s var(--ease-out) forwards 1.1s; }
+@keyframes hoja{ to{ opacity:1; transform:none; } }
+/* cabeza corrida, como en el brandbook; la línea roja avanza con lo que vas llenando */
+.run{ position:sticky; top:0; z-index:4; display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin:0 48px; padding:26px 0 12px; border-bottom:1.5px solid var(--azul); font-size:14px; background:var(--papel); }
+.run b{ font-weight:700; }
+.run b em{ font-style:normal; color:var(--gris); font-weight:600; font-variant-numeric:tabular-nums; margin-left:8px; }
+.run nav{ display:flex; gap:28px; color:var(--gris); text-align:right; }
+.run nav span{ transition:color .3s; }
+.run nav span.on{ color:var(--tinta); font-weight:700; }
+.run .prog{ position:absolute; left:0; bottom:-1.5px; height:3px; width:0; background:var(--rojo); transition:width .6s var(--ease-out); }
+@media (max-width:640px){ .run{ margin:0 18px; } .run nav{ font-size:13px; } .run nav span:not(.on){ display:none; } }
+
+.blk{ display:grid; grid-template-columns:220px 1fr; gap:0 48px; padding:48px 48px 8px; }
+.blk + .blk{ border-top:1px solid var(--linea); margin-top:28px; }
+.blk aside{ position:sticky; top:96px; align-self:start; }
+.blk aside .num{ display:block; font-size:44px; font-weight:900; letter-spacing:-.05em; line-height:1; color:var(--azul); font-variant-numeric:tabular-nums; transition:color .3s, transform .5s var(--rebote); transform-origin:left bottom; }
+.blk.activo aside .num{ color:var(--rojo); transform:scale(1.12) rotate(-4deg); }
+.blk aside h2{ margin:10px 0 0; font-size:24px; line-height:1.1; font-weight:900; letter-spacing:-.03em; }
+.blk aside p{ margin:10px 0 0; font-size:14.5px; color:var(--gris); max-width:30ch; }
+@media (max-width:820px){ .blk{ grid-template-columns:1fr; padding:36px 18px 4px; } .blk aside{ position:static; margin-bottom:26px; } .blk aside p{ max-width:none; } }
+
+/* lo que entra al hacer scroll */
+.js .rv{ opacity:0; transform:translateY(26px); transition:opacity .8s var(--ease-out), transform .8s var(--ease-out); transition-delay:var(--d,0s); }
+.js .rv.in{ opacity:1; transform:none; }
+
+/* campos */
+.row{ display:grid; grid-template-columns:1fr 1fr; gap:0 20px; }
+@media (max-width:640px){ .row{ grid-template-columns:1fr; } }
+.field{ position:relative; display:block; margin-bottom:24px; min-width:0; }
+.lbl{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; font-size:15px; font-weight:700; margin-bottom:8px; }
+.lbl small{ font-weight:500; color:var(--gris); }
+.input{
+  display:block; width:100%; padding:13px 14px; border:1.5px solid rgba(13,17,20,.35); border-radius:2px; background:#fff;
+  font-size:17px; transition:border-color .15s, box-shadow .25s;
+}
+.input::placeholder{ color:rgba(13,17,20,.34); }
+.input:hover{ border-color:rgba(13,17,20,.6); }
+.input:focus{ outline:none; border-color:var(--azul); box-shadow:0 0 0 4px rgba(7,73,144,.14); }
+/* palomita cuando el campo ya está bien */
+.field .ok{ position:absolute; right:12px; top:44px; width:22px; height:22px; border-radius:50%; background:var(--lima); display:grid; place-items:center; transform:scale(0); transition:transform .4s var(--rebote); pointer-events:none; }
+.field .ok svg{ width:12px; height:12px; }
+.field.listo .ok{ transform:scale(1); }
+.field.listo .input{ padding-right:44px; }
+.hint{ display:block; margin-top:7px; font-size:13.5px; color:var(--gris); }
+.msg{ display:none; margin-top:7px; font-size:13.5px; font-weight:600; color:var(--rojo); }
+.field.bad .input{ border-color:var(--rojo); }
+.field.bad .msg{ display:block; animation:aparece .3s var(--ease-out); }
+.field.sacude{ animation:no .45s ease-in-out; }
+@keyframes no{ 0%,100%{ transform:none; } 20%{ transform:translateX(-7px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
+
+/* sí / no */
+.opts{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width:480px){ .opts{ grid-template-columns:1fr; } }
+.opt{ position:relative; display:block; cursor:pointer; }
+.opt input{ position:absolute; opacity:0; pointer-events:none; }
+.opt span{ display:flex; align-items:center; gap:12px; height:100%; padding:14px 16px; border:1.5px solid rgba(13,17,20,.35); border-radius:2px; background:#fff; font-weight:700; transition:border-color .15s, background-color .25s, color .25s, transform .2s var(--ease-out); }
+.opt span::before{ content:""; flex:none; width:18px; height:18px; border-radius:50%; border:1.5px solid currentColor; transition:box-shadow .3s var(--rebote), background-color .2s; }
+.opt:hover span{ border-color:rgba(13,17,20,.6); transform:translateY(-2px); }
+.opt input:checked + span{ background:var(--azul); border-color:var(--azul); color:var(--papel); transform:none; }
+.opt input:checked + span::before{ background:var(--papel); box-shadow:inset 0 0 0 4px var(--azul); border-color:var(--papel); }
+.opt input:focus-visible + span{ outline:3px solid var(--lima); outline-offset:3px; }
+.field.bad .opt span{ border-color:var(--rojo); }
+.sus-no{ display:block; max-height:0; overflow:hidden; opacity:0; margin-top:0; font-size:14px; color:var(--gris); transition:max-height .4s var(--ease-out), opacity .4s, margin .4s; }
+.sus-no.on{ max-height:60px; opacity:1; margin-top:10px; }
+.sus-no a{ color:var(--azul); font-weight:700; }
+
+/* preguntas de la idea */
+.q{ margin-bottom:36px; }
+.q .lbl{ display:block; font-size:clamp(21px,2.4vw,26px); line-height:1.15; font-weight:900; letter-spacing:-.025em; margin-bottom:6px; }
+.q .lbl i{ display:inline-block; font-style:normal; color:var(--rojo); margin-right:6px; font-variant-numeric:tabular-nums; transition:transform .5s var(--rebote); }
+.q:focus-within .lbl i{ transform:scale(1.3) rotate(-8deg); }
+.q .sub{ margin:0 0 14px; font-size:15px; color:var(--gris); max-width:60ch; }
+.q textarea.input{ min-height:150px; resize:vertical; line-height:1.55; }
+.q.idea textarea.input{ min-height:210px; }
+.q .ok{ top:auto; bottom:12px; }
+.q.idea .ok{ bottom:44px; }
+.meter{ display:flex; align-items:center; gap:12px; margin-top:10px; font-size:13px; font-weight:700; color:var(--gris); font-variant-numeric:tabular-nums; }
+.meter .track{ flex:1; height:3px; background:var(--papel-3); border-radius:9px; overflow:hidden; }
+.meter .track i{ display:block; height:100%; width:0; background:var(--azul); transition:width .3s var(--ease-out), background-color .2s; }
+.meter.cerca .track i{ background:var(--lima); }
+.meter.over{ color:var(--rojo); }
+.meter.over .track i{ background:var(--rojo); }
+.meter.over span:last-child{ animation:no .45s ease-in-out; }
+
+/* un personaje se asoma junto a lo que estás llenando */
+.peek{ position:absolute; z-index:3; right:-78px; top:0; width:112px; pointer-events:none; user-select:none; opacity:0; transform:translateX(-30px) rotate(12deg); transition:top .7s var(--ease-out), opacity .3s, transform .6s var(--rebote); }
+.peek.on{ opacity:1; transform:none; }
+.peek img{ display:block; width:100%; height:auto; filter:drop-shadow(0 10px 14px rgba(0,0,0,.25)); animation:respira 3s ease-in-out infinite; transform-origin:50% 100%; }
+@keyframes respira{ 0%,100%{ transform:scale(1,1); } 50%{ transform:scale(1.03,.96); } }
+.peek.cambia img{ animation:salta .5s var(--rebote); }
+@keyframes salta{ 0%{ transform:scale(.6) rotate(-14deg); } 100%{ transform:none; } }
+@media (max-width:1200px){ .peek{ display:none; } }
+
+/* envío */
+.send{ display:grid; grid-template-columns:220px 1fr; gap:0 48px; padding:8px 48px 48px; }
+.send > div{ grid-column:2; }
+@media (max-width:820px){ .send{ grid-template-columns:1fr; padding:4px 18px 32px; } .send > div{ grid-column:1; } }
+.promise{ margin:0 0 24px; padding:16px 18px; background:var(--papel-2); border-left:3px solid var(--azul); font-size:15px; }
+.acts{ display:flex; flex-wrap:wrap; align-items:center; gap:16px 20px; }
+.btn{
+  appearance:none; border:0; border-radius:999px; cursor:pointer; display:inline-flex; align-items:center; gap:10px;
+  font-weight:800; font-size:17px; letter-spacing:-.01em; padding:16px 32px; background:var(--rojo); color:var(--papel);
+  transition:transform .25s var(--rebote), opacity .2s, box-shadow .25s; text-decoration:none;
+}
+.btn .fl{ display:inline-block; transition:transform .3s var(--rebote); }
+.btn:hover:not(:disabled){ transform:translateY(-3px); box-shadow:0 12px 22px -12px rgba(226,84,59,.9); }
+.btn:hover:not(:disabled) .fl{ transform:translateX(5px); }
+.btn:active:not(:disabled){ transform:translateY(1px) scale(.98); }
+.btn:disabled{ opacity:.6; cursor:progress; }
+.btn.listo{ animation:late 1.6s ease-in-out infinite; }
+@keyframes late{ 0%,100%{ box-shadow:0 0 0 0 rgba(226,84,59,.45); } 50%{ box-shadow:0 0 0 10px rgba(226,84,59,0); } }
+.dots i{ display:inline-block; font-style:normal; animation:punto 1s infinite; } .dots i:nth-child(2){ animation-delay:.15s; } .dots i:nth-child(3){ animation-delay:.3s; }
+@keyframes punto{ 0%,100%{ transform:translateY(0); opacity:.4; } 50%{ transform:translateY(-4px); opacity:1; } }
+.btn--tinta{ background:var(--tinta); }
+.btn--tinta:hover:not(:disabled){ box-shadow:0 12px 22px -12px rgba(13,17,20,.8); }
+.btn--ghost{ background:transparent; color:var(--tinta); border:1.5px solid var(--tinta); padding:14.5px 24px; }
+.btn--ghost:hover:not(:disabled){ box-shadow:none; }
+.legal{ font-size:13px; color:var(--gris); max-width:42ch; margin:0; }
+.senderr{ display:none; margin:0 0 18px; padding:14px 16px; border:1.5px solid var(--rojo); color:var(--tinta); font-size:15px; }
+.senderr.on{ display:block; animation:aparece .4s var(--ease-out); }
+.senderr b{ color:var(--rojo); }
+.senderr a{ font-weight:700; }
+
+/* recibido */
+.done{ display:none; position:relative; padding:72px 48px 64px; text-align:center; overflow:hidden; }
+.sheet.sent form, .sheet.sent .run nav, .sheet.sent .run b em{ display:none; }
+.sheet.sent .done{ display:block; }
+.done .lapiz{ width:130px; height:auto; animation:cae .9s var(--rebote) both .1s; }
+@keyframes cae{ 0%{ opacity:0; transform:translateY(-80px) rotate(-20deg); } 100%{ opacity:1; transform:none; } }
+.done .kicker{ color:var(--azul); margin-top:22px; animation:aparece .7s var(--ease-out) both .5s; }
+.done h2{ margin:12px 0 0; font-size:clamp(34px,5vw,54px); line-height:1; font-weight:900; letter-spacing:-.045em; animation:aparece .7s var(--ease-out) both .6s; }
+.done p{ max-width:48ch; margin:18px auto 0; font-size:17px; color:rgba(13,17,20,.75); animation:aparece .7s var(--ease-out) both .7s; }
+.done .acts{ justify-content:center; margin-top:32px; animation:aparece .7s var(--ease-out) both .8s; }
+.parade{ display:flex; justify-content:center; align-items:flex-end; gap:20px; margin:44px auto 0; }
+.parade img{ height:64px; width:auto; opacity:0; animation:aparece .5s var(--ease-out) forwards, hop 1.6s ease-in-out infinite; }
+.parade img:nth-child(1){ animation-delay:1s, 1.5s; } .parade img:nth-child(2){ animation-delay:1.1s, 1.7s; }
+.parade img:nth-child(3){ animation-delay:1.2s, 1.9s; } .parade img:nth-child(4){ animation-delay:1.3s, 2.1s; }
+@keyframes hop{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-9px); } }
+.confeti{ position:absolute; inset:0; pointer-events:none; }
+.confeti i{ position:absolute; top:-12px; width:9px; height:14px; opacity:0; animation:confeti 2.4s cubic-bezier(.2,.7,.4,1) forwards; }
+@keyframes confeti{ 0%{ opacity:1; transform:translate(0,0) rotate(0); } 100%{ opacity:0; transform:translate(var(--x), 520px) rotate(var(--r)); } }
+@media (max-width:560px){ .done{ padding:52px 18px 44px; } .parade img{ height:50px; } }
+
+/* subida de archivos */
+.drop{ position:relative; display:flex; align-items:center; gap:16px; margin-top:12px; padding:18px 20px; cursor:pointer;
+  border:1.5px dashed rgba(13,17,20,.45); border-radius:2px; background:rgba(255,255,255,.55); transition:background-color .2s, border-color .2s, transform .25s var(--rebote); }
+.drop:hover, .drop.over{ background:#fff; border-color:var(--azul); }
+.drop.over{ transform:scale(1.015); }
+.drop input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+.drop svg{ flex:none; width:38px; height:38px; transition:transform .3s var(--rebote); }
+.drop:hover svg, .drop.over svg{ transform:translateY(-3px) rotate(-4deg); }
+.drop b{ display:block; font-weight:700; font-size:15px; }
+.drop small{ display:block; font-size:13px; color:var(--gris); }
+.file{ display:none; align-items:center; gap:14px; margin-top:12px; padding:12px 14px; border:1.5px solid var(--tinta); border-radius:2px; background:#fff; }
+.file.on{ display:flex; animation:aparece .4s var(--ease-out); }
+.file.on + .drop{ display:none; }
+.file .ico{ flex:none; width:34px; height:42px; display:grid; place-items:end center; padding-bottom:5px; background:var(--lima); clip-path:polygon(0 0,70% 0,100% 22%,100% 100%,0 100%); font-size:10px; font-weight:900; text-transform:uppercase; }
+.file .meta{ min-width:0; flex:1; }
+.file .meta b{ display:block; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.file .meta small{ color:var(--gris); font-size:13px; }
+.file button{ flex:none; border:0; background:transparent; cursor:pointer; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:3px; padding:6px; }
+
+/* preguntas frecuentes y crónicas de ejemplo (sobre el azul) */
+.faq{ color:var(--papel); padding:88px 0 0; display:grid; grid-template-columns:260px 1fr; gap:0 48px; }
+.faq h2{ margin:10px 0 0; font-size:clamp(28px,3.6vw,40px); line-height:1; font-weight:900; letter-spacing:-.04em; }
+.faq-list{ border-top:1px solid rgba(250,246,241,.28); }
+.faq details{ border-bottom:1px solid rgba(250,246,241,.28); }
+.faq summary{ position:relative; list-style:none; cursor:pointer; padding:20px 48px 20px 0; font-size:19px; font-weight:800; letter-spacing:-.015em; }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary::after{ content:"+"; position:absolute; right:4px; top:50%; width:30px; height:30px; margin-top:-15px; border-radius:50%; display:grid; place-items:center; background:rgba(250,246,241,.12); font-size:20px; font-weight:600; transition:transform .4s var(--rebote), background-color .2s, color .2s; }
+.faq summary:hover::after{ background:var(--lima); color:var(--tinta); }
+.faq details[open] summary::after{ transform:rotate(135deg); background:var(--lima); color:var(--tinta); }
+.faq details > div{ overflow:hidden; }
+.faq details p{ margin:0 0 22px; max-width:62ch; color:rgba(250,246,241,.82); font-size:16.5px; }
+.faq details[open] > div{ animation:abre .5s var(--ease-out); }
+@keyframes abre{ from{ opacity:0; transform:translateY(-8px); } to{ opacity:1; transform:none; } }
+.leer{ grid-column:1 / -1; margin-top:72px; }
+.cards{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:24px; }
+.card{ position:relative; display:flex; flex-direction:column; gap:6px; min-height:190px; padding:18px; background:var(--papel); color:var(--tinta); text-decoration:none; border-radius:3px;
+  box-shadow:0 18px 30px -20px rgba(0,0,0,.6); transition:transform .4s var(--rebote), box-shadow .3s; }
+.card:nth-child(odd){ transform:rotate(-1deg); } .card:nth-child(even){ transform:rotate(.8deg); }
+.card:hover{ transform:translateY(-8px) rotate(0); box-shadow:0 28px 40px -22px rgba(0,0,0,.7); }
+.card .mark{ width:42px; height:42px; display:grid; place-items:center; border-radius:2px; font-size:28px; font-weight:900; color:var(--papel); margin-bottom:auto; transition:transform .4s var(--rebote); }
+.card:hover .mark{ transform:rotate(-10deg) scale(1.1); }
+.g-rojo{ background:var(--rojo); } .g-azul{ background:var(--azul); } .g-lima{ background:var(--lima); color:var(--tinta)!important; } .g-tinta{ background:var(--tinta); }
+.card b{ font-size:19px; font-weight:900; letter-spacing:-.03em; line-height:1.1; margin-top:22px; }
+.card small{ font-size:13.5px; color:var(--gris); line-height:1.4; }
+.card::after{ content:"Leer →"; font-size:13px; font-weight:800; color:var(--azul); margin-top:8px; }
+@media (max-width:900px){ .faq{ grid-template-columns:1fr; padding-top:64px; } .faq-head{ margin-bottom:22px; } .cards{ grid-template-columns:1fr 1fr; } }
+@media (max-width:480px){ .cards{ grid-template-columns:1fr; } .card{ min-height:0; } .card b{ margin-top:14px; } }
+
+footer{ margin-top:72px; color:rgba(250,246,241,.65); font-size:13.5px; display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+footer a{ color:var(--papel); }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none!important; animation:none!important; }
+  .js .hero h1 .w > span, .js .rv, .js .sheet, .js .facts div, .parade img{ opacity:1!important; transform:none!important; }
+  .js .excl{ visibility:visible; }
+  .confeti{ display:none; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <a href="https://perpetuo.global" aria-label="Perpetuo"><span class="logo" role="img" aria-label="Perpetuo"></span></a>
+    <a class="site" href="https://perpetuo.global" target="_blank" rel="noopener">Leer Perpetuo →</a>
+  </header>
+
+  <section class="hero">
+    <div class="escena">
+      <h1 aria-label="Convocatoria de Crónicas"><span class="w"><span style="--i:0">Convocatoria</span></span> <span class="w"><span style="--i:1">de</span></span> <span class="w"><span style="--i:2">Crónicas</span></span></h1>
+      <div class="excl" id="excl" aria-hidden="true" title="¡!">
+        <div class="excl-mov"><div class="excl-cuerpo">
+          <span class="bicho">
+            <img class="p p0" alt="" src="assets/partes/exclamacion-0.webp" style="--ox:67.6%;--oy:59.5%;--a:14deg">
+            <img class="p p1 b" alt="" src="assets/partes/exclamacion-1.webp" style="--ox:27.9%;--oy:58.8%;--a:14deg">
+            <img class="p p2 b" alt="" src="assets/partes/exclamacion-2.webp" style="--ox:57.8%;--oy:76.3%;--a:18deg">
+            <img class="p p3" alt="" src="assets/partes/exclamacion-3.webp" style="--ox:25.4%;--oy:82.9%;--a:18deg">
+            <img class="c" alt="" src="assets/partes/exclamacion-cuerpo.webp">
+          </span>
+        </div></div>
+        <span class="sombra"></span>
+      </div>
+    </div>
+    <dl class="facts">
+      <div style="--i:0"><dt>Pago</dt><dd>250 USD por texto</dd></div>
+      <div style="--i:1"><dt>Publicación</dt><dd>Principios de 2027</dd></div>
+      <div style="--i:2"><dt>Desde</dt><dd>Cualquier país</dd></div>
+      <div style="--i:3"><dt>Necesitas</dt><dd>Una idea y textos tuyos</dd></div>
+    </dl>
+  </section>
+
+  <div class="sheet" id="sheet">
+    <div class="run">
+      <b>Aplicación<em id="cuenta"></em></b>
+      <nav aria-hidden="true"><span class="on" data-run="blkA">01 Tú</span><span data-run="blkB">02 La idea</span><span data-run="blkC">03 Tu escritura</span></nav>
+      <i class="prog" id="prog" aria-hidden="true"></i>
+    </div>
+    <div class="peek" id="peek" aria-hidden="true"><img id="peekImg" src="assets/punto_lentes.png" alt=""></div>
+
+    <form id="form" novalidate>
+      <!-- 01 · TÚ -->
+      <section class="blk" id="blkA" aria-labelledby="hA">
+        <aside class="rv">
+          <span class="num">01</span>
+          <h2 id="hA">Tú</h2>
+          <p>Para saber a quién escribirle. No compartimos tus datos con nadie.</p>
+        </aside>
+        <div>
+          <label class="field rv" data-f="nombre">
+            <span class="lbl">Nombre completo</span>
+            <input class="input" name="nombre" autocomplete="name" placeholder="Como firmarías la crónica">
+            <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="msg">Escribe tu nombre.</span>
+          </label>
+          <div class="row rv" style="--d:.08s">
+            <label class="field" data-f="pais">
+              <span class="lbl">País de residencia</span>
+              <input class="input" name="pais" list="paises" autocomplete="country-name" placeholder="México">
+              <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="msg">¿Desde dónde nos escribes?</span>
+            </label>
+            <label class="field" data-f="correo">
+              <span class="lbl">Correo electrónico</span>
+              <input class="input" name="correo" type="email" autocomplete="email" inputmode="email" placeholder="tu@correo.com">
+              <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <span class="msg">Revisa tu correo; parece que le falta algo.</span>
+            </label>
+          </div>
+          <label class="field rv" data-f="whatsapp" style="--d:.12s">
+            <span class="lbl">WhatsApp <small>Opcional</small></span>
+            <input class="input" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="+52 55 1234 5678">
+            <span class="hint">Con lada del país. Lo usamos solo si hace falta platicar tu idea.</span>
+          </label>
+          <div class="field rv" data-f="suscrito" role="radiogroup" aria-labelledby="lblSus" style="--d:.16s">
+            <span class="lbl" id="lblSus">¿Ya estás suscrito a Perpetuo?</span>
+            <div class="opts">
+              <label class="opt"><input type="radio" name="suscrito" value="si"><span>Sí, ya estoy suscrito</span></label>
+              <label class="opt"><input type="radio" name="suscrito" value="no"><span>Todavía no</span></label>
+            </div>
+            <span class="sus-no" id="susNo">Es gratis y es la mejor forma de conocer lo que publicamos: <a href="https://perpetuo.substack.com" target="_blank" rel="noopener">suscríbete aquí</a>.</span>
+            <span class="msg">Elige una opción.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 · LA IDEA -->
+      <section class="blk" id="blkB" aria-labelledby="hB">
+        <aside class="rv">
+          <span class="num">02</span>
+          <h2 id="hB">La idea</h2>
+          <p>Tres preguntas. Lo que buscamos es una historia, no un tema: personas, lugares y algo que esté en juego.</p>
+        </aside>
+        <div>
+          <label class="field q idea rv" data-f="idea">
+            <span class="lbl"><i>1.</i>Cuéntanos de qué va tu idea.</span>
+            <p class="sub">En 100 palabras o menos.</p>
+            <textarea class="input" name="idea" placeholder="¿Qué pasó, a quién, dónde? ¿Qué vas a reportear y a quién vas a entrevistar?"></textarea>
+            <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <div class="meter" id="meter" aria-live="polite"><span class="track"><i id="meterBar"></i></span><span id="meterTxt">0 / 100 palabras</span></div>
+            <span class="msg" id="msgIdea">Cuéntanos tu idea.</span>
+          </label>
+          <label class="field q rv" data-f="porQueAhora">
+            <span class="lbl"><i>2.</i>¿Por qué tiene que contarse ahora?</span>
+            <p class="sub">Qué la vuelve urgente hoy y no hace cinco años o dentro de cinco.</p>
+            <textarea class="input" name="porQueAhora"></textarea>
+            <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="msg">Cuéntanos por qué ahora.</span>
+          </label>
+          <label class="field q rv" data-f="cienAnos">
+            <span class="lbl"><i>3.</i>En cien años, ¿qué recordará la humanidad de tu historia?</span>
+            <p class="sub">Lo que quedará cuando la noticia ya no sea noticia.</p>
+            <textarea class="input" name="cienAnos"></textarea>
+            <span class="ok"><svg viewBox="0 0 12 12"><path d="M2 6.5 5 9l5-6" fill="none" stroke="#0D1114" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="msg">Cuéntanos qué quedará de tu historia.</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- 03 · LO QUE HAS ESCRITO -->
+      <section class="blk" id="blkC" aria-labelledby="hC">
+        <aside class="rv">
+          <span class="num">03</span>
+          <h2 id="hC">Lo que has escrito</h2>
+          <p>No tienes que haber publicado en otra revista (nos encanta publicar a quien nunca lo ha hecho), pero sí haber escrito algo.</p>
+        </aside>
+        <div>
+          <div class="field rv" data-f="textos">
+            <label class="lbl" for="textos">Ejemplos de tu escritura</label>
+            <textarea class="input" id="textos" name="textos" style="min-height:110px" placeholder="Pega enlaces a textos tuyos, uno por línea: un blog, un Substack, un Google Doc, una revista…"></textarea>
+            <span class="hint">O adjunta un texto tuyo aquí abajo.</span>
+            <div class="file" id="fileMuestra"><span class="ico"></span><span class="meta"><b></b><small></small></span><button type="button" data-quitar="muestra">Quitar</button></div>
+            <label class="drop" data-drop="muestra">
+              <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 4h17l9 9v23H8z" fill="#FAF6F1" stroke="#0D1114" stroke-width="2" stroke-linejoin="round"/><path d="M25 4v9h9" fill="none" stroke="#0D1114" stroke-width="2" stroke-linejoin="round"/><path d="M21 31V19m-5 5 5-5 5 5" fill="none" stroke="#074990" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><b>Arrastra un texto tuyo o haz clic para elegirlo</b><small>Word, PDF, Pages, RTF o TXT · hasta 8 MB</small></span>
+              <input type="file" name="muestra" accept=".doc,.docx,.pdf,.odt,.rtf,.txt,.pages,.md">
+            </label>
+            <span class="msg" id="msgTextos">Comparte al menos un enlace o adjunta un texto tuyo.</span>
+          </div>
+          <div class="field rv" data-f="borrador" style="--d:.08s">
+            <span class="lbl">¿Ya tienes un borrador de esta crónica? <small>Opcional</small></span>
+            <div class="file" id="fileBorrador"><span class="ico"></span><span class="meta"><b></b><small></small></span><button type="button" data-quitar="borrador">Quitar</button></div>
+            <label class="drop" data-drop="borrador">
+              <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 4h17l9 9v23H8z" fill="#FAF6F1" stroke="#0D1114" stroke-width="2" stroke-linejoin="round"/><path d="M25 4v9h9" fill="none" stroke="#0D1114" stroke-width="2" stroke-linejoin="round"/><path d="M21 31V19m-5 5 5-5 5 5" fill="none" stroke="#e2543b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><b>Adjunta tu borrador</b><small>Felizmente lo leeremos · hasta 8 MB</small></span>
+              <input type="file" name="borrador" accept=".doc,.docx,.pdf,.odt,.rtf,.txt,.pages,.md">
+            </label>
+            <input class="input" name="borradorEnlace" type="url" inputmode="url" placeholder="…o pega el enlace a tu borrador (Google Docs, Dropbox…)" style="margin-top:12px">
+            <span class="msg" id="msgBorrador"></span>
+          </div>
+        </div>
+      </section>
+
+      <div class="send rv">
+        <div>
+          <p class="promise">Leemos <b>todas</b> las aplicaciones. Si seleccionamos tu idea, te contactaremos directamente para trabajarla con nuestro equipo editorial y publicarla a principios de 2027. Pagamos <b>250 USD</b> por texto.</p>
+          <p class="senderr" id="sendErr" role="alert"></p>
+          <div class="acts">
+            <button type="submit" class="btn" id="enviar"><span id="enviarTxt">Enviar mi idea</span> <span class="fl">→</span></button>
+            <p class="legal">Al enviar aceptas que guardemos tus datos para responderte sobre esta aplicación.</p>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <section class="done" aria-live="polite">
+      <div class="confeti" id="confeti" aria-hidden="true"></div>
+      <img class="lapiz" src="assets/punto_lapiz.png" alt="">
+      <p class="kicker" id="doneFolio"></p>
+      <h2 id="doneH">Recibimos tu idea.</h2>
+      <p>La leerá el equipo del estelar. Si la seleccionamos, te escribiremos a <b id="doneMail"></b> para empezar a trabajarla. Mientras tanto, date una vuelta por las crónicas que hemos publicado.</p>
+      <div class="acts">
+        <a class="btn btn--tinta" href="https://perpetuo.global" target="_blank" rel="noopener">Leer Perpetuo</a>
+        <button type="button" class="btn btn--ghost" id="otra">Enviar otra idea</button>
+      </div>
+      <div class="parade" aria-hidden="true">
+        <img src="assets/punto.webp" alt=""><img src="assets/coma.webp" alt=""><img src="assets/interrogacion.webp" alt=""><img src="assets/exclamacion.webp" alt="">
+      </div>
+    </section>
+  </div>
+
+  <section class="faq" aria-labelledby="hFaq">
+    <div class="faq-head rv">
+      <p class="kicker">Si tienes preguntas</p>
+      <h2 id="hFaq">Aquí unas respuestas.</h2>
+    </div>
+    <div class="faq-list">
+      <details class="rv">
+        <summary>¿Qué es una crónica?</summary>
+        <div><p>Nos aferramos a la definición de Juan Villoro: la crónica es el ornitorrinco de la prosa, un animal híbrido de otros tantos. En resumidas cuentas, es el relato de un hecho verídico contado, casi siempre, en primera persona. Usa herramientas del cuento para que el lector, más que entender los hechos, sienta que estuvo ahí. Pero tampoco queremos darte muchas definiciones: la mejor manera de responder es haciendo.</p></div>
+      </details>
+      <details class="rv" style="--d:.06s">
+        <summary>¿Qué tan larga es una crónica?</summary>
+        <div><p>Miguel Silva escribió una vez que una historia larga es una que dejas de leer. No nos preocupa mucho la longitud, y para aplicar solo necesitas una idea y ejemplos de tu escritura. Como dice la sabiduría popular: el tamaño no importa, sino el uso del arma.</p></div>
+      </details>
+      <details class="rv" style="--d:.12s">
+        <summary>¿Puedo aplicar desde cualquier país?</summary>
+        <div><p>¡Claro! Nosotros nos encargamos de la logística.</p></div>
+      </details>
+      <details class="rv" style="--d:.18s">
+        <summary>¿Qué pasa si eligen mi idea?</summary>
+        <div><p>Nos pondremos en contacto directo contigo y empezaremos a trabajar para publicarla a principios de 2027. Recibirás un pago de 250 USD por el texto y la guía de nuestro equipo editorial.</p></div>
+      </details>
+    </div>
+
+    <div class="leer rv">
+      <p class="kicker">Para saber lo que nos gusta</p>
+      <h2>Crónicas que hemos publicado</h2>
+      <div class="cards">
+        <a class="card" href="https://www.perpetuo.global/p/el-palacio-negro" target="_blank" rel="noopener"><span class="mark g-rojo">!</span><b>El palacio negro</b><small>Cultos y santería moderna en México</small></a>
+        <a class="card" href="https://www.perpetuo.global/p/noticias-de-otro-gran-secuestro" target="_blank" rel="noopener"><span class="mark g-lima">?</span><b>Noticias de otro gran secuestro</b><small>A 30 años de lo ocurrido con Juan Carlos Gaviria, hermano del expresidente.</small></a>
+        <a class="card" href="https://www.perpetuo.global/p/anelo" target="_blank" rel="noopener"><span class="mark g-azul">.</span><b>Añelo</b><small>El Dubái que nunca fue.</small></a>
+        <a class="card" href="https://www.perpetuo.global/p/el-sueno-del-suri" target="_blank" rel="noopener"><span class="mark g-tinta">,</span><b>El sueño del Suri</b><small>De Sofía de la Vega</small></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© Perpetuo · <a href="https://perpetuo.global">perpetuo.global</a></span>
+    <span>¿Otro tipo de texto? <a href="https://escribe.perpetuo.global">Escribe con nosotros</a> · ¿Dudas? <a href="mailto:general@perpetuo.global">general@perpetuo.global</a></span>
+  </footer>
+</main>
+
+<datalist id="paises">
+  <option>Argentina</option><option>Bolivia</option><option>Chile</option><option>Colombia</option><option>Costa Rica</option><option>Cuba</option>
+  <option>Ecuador</option><option>El Salvador</option><option>España</option><option>Estados Unidos</option><option>Guatemala</option><option>Honduras</option>
+  <option>México</option><option>Nicaragua</option><option>Panamá</option><option>Paraguay</option><option>Perú</option><option>Puerto Rico</option>
+  <option>República Dominicana</option><option>Uruguay</option><option>Venezuela</option><option>Brasil</option><option>Canadá</option><option>Francia</option>
+  <option>Alemania</option><option>Reino Unido</option><option>Italia</option>
+</datalist>
+
+<script>
+const CONFIG = {
+  // Webhook de n8n: crea la ficha en 🛄 Propuestas de Crónicas y avisa en #estelares.
+  // Vacío = modo demostración: no envía nada, solo simula el envío.
+  WEBHOOK_URL: "https://esperpetuo.app.n8n.cloud/webhook/cronicas",
+  MAX_PALABRAS: 100,
+  MAX_MB: 8,
+  CORREO: "general@perpetuo.global",
+  CLAVE_LOCAL: "perpetuo-cronicas-borrador"
+};
+const CAMPOS = ["nombre","pais","correo","whatsapp","suscrito","idea","porQueAhora","cienAnos","textos","borradorEnlace"];
+const OBLIGATORIOS = ["nombre","pais","correo","suscrito","idea","porQueAhora","cienAnos","textos"];
+// quién se asoma junto a cada parte del formulario
+const PERSONAJES = { blkA:"punto_lentes", idea:"interr_lupa", porQueAhora:"excl_corre", cienAnos:"coma_piensa", blkC:"punto_lapiz" };
+const archivos = { muestra:null, borrador:null };
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const form = $("#form");
+const val = n => { const el = form.elements[n]; return el ? (el.value || "").trim() : ""; };
+const palabras = t => (t.trim().match(/\S+/g) || []).length;
+const reMail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const reUrl = v => { try { const u = new URL(v); return /^https?:$/.test(u.protocol) && u.hostname.includes("."); } catch { return false; } };
+const conProtocolo = v => v && !/^https?:\/\//i.test(v) ? "https://" + v.replace(/^\/+/, "") : v;
+const bienLleno = n => n === "correo" ? reMail.test(val(n))
+  : n === "idea" ? (palabras(val(n)) > 0 && palabras(val(n)) <= CONFIG.MAX_PALABRAS)
+  : n === "textos" ? (!!val(n) || !!archivos.muestra) : !!val(n);
+
+/* ---------- contador de palabras ---------- */
+function medir(){
+  const n = palabras(val("idea")), max = CONFIG.MAX_PALABRAS;
+  $("#meterTxt").textContent = `${n} / ${max} palabras`;
+  $("#meterBar").style.width = Math.min(100, n / max * 100) + "%";
+  const m = $("#meter"), estaba = m.classList.contains("over");
+  m.classList.toggle("cerca", n >= max * .85 && n <= max);
+  m.classList.toggle("over", n > max);
+  if (n > max && !estaba){ m.classList.remove("over"); void m.offsetWidth; m.classList.add("over"); }
+}
+
+/* ---------- avance: palomitas, línea roja de la cabeza y el botón ---------- */
+function avance(){
+  let hechos = 0;
+  OBLIGATORIOS.forEach(n => { const ok = bienLleno(n); if (ok) hechos++; $(`[data-f="${n}"]`).classList.toggle("listo", ok && !["suscrito","textos"].includes(n)); });
+  $("#prog").style.width = (hechos / OBLIGATORIOS.length * 100) + "%";
+  $("#cuenta").textContent = hechos ? `${hechos} de ${OBLIGATORIOS.length}` : "";
+  $("#enviar").classList.toggle("listo", hechos === OBLIGATORIOS.length);
+}
+
+/* ---------- validación ---------- */
+function marcar(f, mal){ const el = $(`[data-f="${f}"]`); el.classList.toggle("bad", !!mal); return !mal; }
+function validar(){
+  const errores = [];
+  const chk = (f, ok) => { if (!marcar(f, !ok)) errores.push(f); };
+  chk("nombre", !!val("nombre"));
+  chk("pais", !!val("pais"));
+  chk("correo", reMail.test(val("correo")));
+  chk("suscrito", !!val("suscrito"));
+  const n = palabras(val("idea"));
+  $("#msgIdea").textContent = n ? `Son ${n} palabras; recórtala a ${CONFIG.MAX_PALABRAS} o menos.` : "Cuéntanos tu idea.";
+  chk("idea", n > 0 && n <= CONFIG.MAX_PALABRAS);
+  chk("porQueAhora", !!val("porQueAhora"));
+  chk("cienAnos", !!val("cienAnos"));
+  chk("textos", bienLleno("textos"));
+  const be = conProtocolo(val("borradorEnlace"));
+  if (be) form.elements.borradorEnlace.value = be;
+  $("#msgBorrador").textContent = "Pega un enlace completo (https://…).";
+  chk("borrador", !be || reUrl(be));
+  if (errores.length){
+    const el = $(`[data-f="${errores[0]}"]`);
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    setTimeout(() => { el.classList.remove("sacude"); void el.offsetWidth; el.classList.add("sacude"); }, 350);
+    const inp = $("input:not([type=radio]), textarea", el) || $("input", el);
+    inp && setTimeout(() => inp.focus({ preventScroll:true }), 300);
+  }
+  return !errores.length;
+}
+
+/* ---------- envío ---------- */
+function folio(){ const a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let f = ""; for (let i = 0; i < 6; i++) f += a[Math.floor(Math.random() * a.length)]; return "C-" + f; }
+function datos(){ const d = {}; CAMPOS.forEach(n => d[n] = val(n)); d.correo = d.correo.toLowerCase(); return d; }
+
+/* ---------- archivos: un texto previo y el borrador ---------- */
+const fmtMB = b => b > 1048576 ? (b/1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b/1024)) + " KB";
+function ponerArchivo(tipo, f){
+  if (!f) return;
+  const campo = tipo === "muestra" ? "textos" : "borrador", msg = tipo === "muestra" ? "#msgTextos" : "#msgBorrador";
+  if (f.size > CONFIG.MAX_MB * 1048576){
+    $(msg).textContent = `Pesa ${fmtMB(f.size)}; el máximo es ${CONFIG.MAX_MB} MB. Prueba con un enlace.`;
+    return marcar(campo, true);
+  }
+  archivos[tipo] = f;
+  const card = $(tipo === "muestra" ? "#fileMuestra" : "#fileBorrador");
+  $(".ico", card).textContent = (f.name.split(".").pop() || "doc").slice(0, 4);
+  $(".meta b", card).textContent = f.name;
+  $(".meta small", card).textContent = fmtMB(f.size);
+  card.classList.add("on");
+  marcar(campo, false); avance();
+}
+function quitarArchivo(tipo){
+  archivos[tipo] = null;
+  $(tipo === "muestra" ? "#fileMuestra" : "#fileBorrador").classList.remove("on");
+  avance();
+}
+$$("[data-drop]").forEach(drop => {
+  const tipo = drop.dataset.drop, inp = $("input", drop);
+  inp.addEventListener("change", () => { ponerArchivo(tipo, inp.files[0]); inp.value = ""; });
+  ["dragenter","dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+  ["dragleave","drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+  drop.addEventListener("drop", e => ponerArchivo(tipo, e.dataTransfer.files[0]));
+});
+$$("[data-quitar]").forEach(b => b.addEventListener("click", () => quitarArchivo(b.dataset.quitar)));
+
+// Si n8n no responde, la persona puede mandarnos lo mismo por correo sin perder lo que escribió
+function enlaceCorreo(d){
+  const cuerpo = [
+    `Nombre: ${d.nombre}`, `País: ${d.pais}`, `Correo: ${d.correo}`, d.whatsapp ? `WhatsApp: ${d.whatsapp}` : null,
+    `¿Suscrito?: ${d.suscrito === "si" ? "Sí" : "No"}`, "",
+    "1. ¿De qué va tu idea?", d.idea, "",
+    "2. ¿Por qué tiene que contarse ahora?", d.porQueAhora, "",
+    "3. En cien años, ¿qué recordará la humanidad de tu historia?", d.cienAnos, "",
+    "Ejemplos de mi escritura:", d.textos || "(los adjunto a este correo)",
+    d.borradorEnlace ? "\nBorrador: " + d.borradorEnlace : null,
+    archivos.muestra || archivos.borrador ? "\n(Adjunta aquí tus archivos antes de enviar.)" : null
+  ].filter(l => l !== null).join("\n");
+  return `mailto:${CONFIG.CORREO}?subject=${encodeURIComponent("Idea de crónica · " + d.nombre)}&body=${encodeURIComponent(cuerpo)}`;
+}
+
+function confeti(){
+  const c = $("#confeti"), colores = ["#e2543b","#074990","#C3D73A","#0D1114"];
+  c.innerHTML = Array.from({ length:42 }, (_, i) =>
+    `<i style="left:${Math.random()*100}%;background:${colores[i % 4]};--x:${(Math.random()-.5)*180}px;--r:${(Math.random()-.5)*900}deg;animation-delay:${Math.random()*.5}s;border-radius:${i % 3 ? 1 : 50}px"></i>`).join("");
+}
+
+function enviar(){
+  const d = datos(); d.folio = folio(); d.fecha = new Date().toISOString();
+  const btn = $("#enviar"), txt = $("#enviarTxt"), err = $("#sendErr");
+  btn.disabled = true; btn.classList.remove("listo"); txt.innerHTML = 'Enviando<span class="dots"><i>.</i><i>.</i><i>.</i></span>'; err.classList.remove("on");
+
+  const listo = () => {
+    $("#doneFolio").textContent = "Folio " + d.folio;
+    $("#doneH").textContent = `Gracias, ${d.nombre.split(/\s+/)[0]}. Recibimos tu idea.`;
+    $("#doneMail").textContent = d.correo;
+    borrar();
+    $("#peek").classList.remove("on");
+    $("#sheet").classList.add("sent"); confeti();
+    btn.disabled = false; txt.textContent = "Enviar mi idea";
+    scrollTo({ top: $("#sheet").getBoundingClientRect().top + scrollY - 24, behavior:"smooth" });
+  };
+  const fallo = html => {
+    btn.disabled = false; txt.textContent = "Enviar mi idea"; avance();
+    err.innerHTML = html; err.classList.add("on");
+  };
+  const falloCorreo = () => fallo(`<b>No pudimos recibir tu aplicación.</b> Intenta de nuevo en un momento o <a href="${enlaceCorreo(d)}">mándanosla por correo</a>: tus respuestas ya van escritas.`);
+
+  if (!CONFIG.WEBHOOK_URL){ // modo demostración
+    console.info("[Crónicas] Modo demostración. Esto se enviaría:", d);
+    return setTimeout(listo, 900);
+  }
+  const fd = new FormData();
+  Object.entries(d).forEach(([k, v]) => fd.append(k, v ?? ""));
+  Object.entries(archivos).forEach(([k, f]) => { if (f) fd.append(k, f, f.name); });
+  const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 60000);
+  fetch(CONFIG.WEBHOOK_URL, { method:"POST", body:fd, signal:ctrl.signal })
+    .then(r => {
+      clearTimeout(t);
+      if (r.ok) return listo();
+      if (r.status === 400) return fallo("<b>Falta algo.</b> Revisa tus datos, las tres respuestas y tus ejemplos de escritura e intenta de nuevo.");
+      if (r.status === 413) return fallo("<b>Tus archivos pesan demasiado.</b> Prueba con uno más ligero o comparte un enlace.");
+      falloCorreo();
+    })
+    .catch(() => { clearTimeout(t); falloCorreo(); });
+}
+
+form.addEventListener("submit", e => { e.preventDefault(); if (validar()) enviar(); });
+form.addEventListener("input", e => {
+  const f = e.target.closest("[data-f]");
+  if (f && f.classList.contains("bad") && e.target.type !== "radio") f.classList.remove("bad");
+  if (e.target.name === "idea") medir();
+  avance(); guardar();
+});
+form.addEventListener("change", e => {
+  if (e.target.name === "suscrito"){ marcar("suscrito", false); $("#susNo").classList.toggle("on", val("suscrito") === "no"); }
+  avance(); guardar();
+});
+
+/* ---------- el personaje se asoma junto a lo que llenas ---------- */
+const peek = $("#peek"), peekImg = $("#peekImg");
+form.addEventListener("focusin", e => {
+  const f = e.target.closest("[data-f]"); if (!f) return;
+  const blk = f.closest(".blk");
+  $$(".blk").forEach(b => b.classList.toggle("activo", b === blk));
+  const quien = PERSONAJES[f.dataset.f] || PERSONAJES[blk.id];
+  if (!quien) return;
+  const sheet = $("#sheet").getBoundingClientRect(), r = f.getBoundingClientRect();
+  peek.style.top = Math.max(70, r.top - sheet.top + (f.classList.contains("q") ? 40 : -10)) + "px";
+  if (!peekImg.src.endsWith(quien + ".png")){
+    peek.classList.remove("cambia"); peekImg.src = `assets/${quien}.png`; void peek.offsetWidth; peek.classList.add("cambia");
+  }
+  peek.classList.add("on");
+});
+form.addEventListener("focusout", () => setTimeout(() => {
+  if (!form.contains(document.activeElement)){ peek.classList.remove("on"); $$(".blk").forEach(b => b.classList.remove("activo")); }
+}, 120));
+
+/* ---------- aparece al hacer scroll y la cabeza marca la sección ---------- */
+const rv = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting){ en.target.classList.add("in"); rv.unobserve(en.target); } }), { rootMargin:"0px 0px -8% 0px" });
+$$(".rv").forEach(el => rv.observe(el));
+// por si el navegador tarda en avisar: lo que ya está en pantalla (o arriba) aparece de todos modos
+const revelarVisibles = () => $$(".rv:not(.in)").forEach(el => { if (el.getBoundingClientRect().top < innerHeight) el.classList.add("in"); });
+setTimeout(revelarVisibles, 2500);
+addEventListener("scroll", () => { clearTimeout(revelarVisibles.t); revelarVisibles.t = setTimeout(revelarVisibles, 400); }, { passive:true });
+const vista = new IntersectionObserver(es => es.forEach(en => {
+  if (en.isIntersecting) $$("[data-run]").forEach(s => s.classList.toggle("on", s.dataset.run === en.target.id));
+}), { rootMargin:"-45% 0px -45% 0px" });
+$$(".blk").forEach(b => vista.observe(b));
+
+/* ---------- la Exclamación de la portada ----------
+   Cada cuadro calcula posición, salto, inclinación, aplastamiento y el ángulo de cada brazo y pierna.
+   Las poses cambian moviendo el "objetivo" de un resorte, así que todo se funde sin cortes. */
+(function exclamacion(){
+  const ex = $("#excl");
+  if (!ex) return;
+  const mov = $(".excl-mov", ex), cuerpo = $(".excl-cuerpo", ex), cara = $(".bicho .c", ex), sombra = $(".sombra", ex);
+  const pieza = [0, 1, 2, 3].map(i => $(".p" + i, ex));   // 0 brazo der. · 1 brazo izq. · 2 pierna der. · 3 pierna izq.
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches){ ex.classList.add("vivo"); return; }
+
+  // resorte amortiguado (k: rigidez, z: amortiguación; z < 1 rebota un poco)
+  const resorte = (x, k, z) => ({ x, v:0, t:x, k, z });
+  const paso = (r, dt) => { r.v += (r.k * (r.t - r.x) - 2 * r.z * Math.sqrt(r.k) * r.v) * dt; r.x += r.v * dt; };
+  const inclina = resorte(0, 90, .5), aplasta = resorte(1, 320, .3), corre = resorte(0, 30, 1),
+        ola = resorte(0, 40, 1), baile = resorte(0, 30, 1), mira = resorte(0, 25, .8);
+  const pose = [resorte(0, 180, .5), resorte(0, 180, .5), resorte(0, 220, .6), resorte(0, 220, .6)];
+  const POSES = {
+    quieto: [0, 0, 0, 0],
+    frena:  [-8, 34, -30, -22],
+    aire:   [-48, 62, 26, -26],
+    prepara:[12, -14, 10, -8]
+  };
+  const ponPose = n => POSES[n].forEach((a, i) => pose[i].t = a);
+
+  let W = ex.offsetWidth, g = W * 14, t = 0, antes = 0, fase = 0, activo = true, corriendo = false;
+  let modo = "espera", x = 0, vx = 0, vmax = 0, freno = 0, y = 0, vy = 0;
+  let alAterrizar = null, alFrenar = null, ultimoPolvo = 0;
+  const timers = [];
+  const espera = s => new Promise(r => timers.push({ en: t + s, r }));
+
+  /* partículas: polvo al derrapar o caer, chispas al saltar */
+  function polvo(n, dir){
+    for (let i = 0; i < n; i++){
+      const p = document.createElement("span"), d = W * (.06 + Math.random() * .07);
+      p.className = "polvo";
+      p.style.cssText = `width:${d}px;height:${d}px;left:${30 + Math.random() * 40}%;transform:translateX(${x}px)`;
+      ex.appendChild(p);
+      const dx = (dir || (Math.random() < .5 ? -1 : 1)) * W * (.2 + Math.random() * .45), dy = -W * (.05 + Math.random() * .18);
+      p.animate([
+        { transform:`translate(${x}px,0) scale(.6)`, opacity:.75 },
+        { transform:`translate(${x + dx}px,${dy}px) scale(1.7)`, opacity:0 }
+      ], { duration:500 + Math.random() * 350, easing:"cubic-bezier(.2,.7,.3,1)" }).onfinish = () => p.remove();
+    }
+  }
+  function chispas(){
+    for (let i = 0; i < 5; i++){
+      const c = document.createElement("span"), ang = (-60 + i * 30 + (Math.random() - .5) * 14) * Math.PI / 180, dist = W * (.55 + Math.random() * .35);
+      c.className = "chispa"; c.textContent = "!"; c.style.fontSize = W * (.16 + Math.random() * .08) + "px";
+      ex.appendChild(c);
+      c.animate([
+        { transform:`translate(-50%,0) rotate(0) scale(.4)`, opacity:1 },
+        { transform:`translate(calc(-50% + ${Math.sin(ang) * dist}px), ${-Math.cos(ang) * dist}px) rotate(${ang * 60}deg) scale(1)`, opacity:0 }
+      ], { duration:750, easing:"cubic-bezier(.15,.8,.3,1)" }).onfinish = () => c.remove();
+    }
+  }
+
+  /* acciones */
+  async function salto(alto = 1, conChispas = false){
+    if (y > 0) return;
+    ponPose("prepara"); aplasta.t = .8;
+    await espera(.12);
+    aplasta.t = 1; aplasta.v = 9; ponPose("aire");
+    vy = Math.sqrt(2 * g * W * .55 * alto);
+    if (conChispas) chispas();
+    return new Promise(r => alAterrizar = r);
+  }
+  function aterriza(){
+    aplasta.x = .78; aplasta.v = 0; ponPose("quieto");
+    polvo(5);
+    const r = alAterrizar; alAterrizar = null; r && r();
+  }
+  async function saluda(){ ola.t = 1; await espera(1.8); ola.t = 0; }
+  async function bailecito(){ baile.t = 1; await espera(2.2); baile.t = 0; }
+
+  async function entrada(){
+    W = ex.offsetWidth; g = W * 14;
+    const dist = ex.getBoundingClientRect().left + W + 60;
+    x = -dist; vmax = Math.min(1500, Math.max(520, dist / 1.05)); vx = vmax * .55; freno = vmax * 3.2;
+    modo = "corre"; ex.classList.add("vivo");
+    await new Promise(r => alFrenar = r);
+    await espera(.14);
+    await salto(1.15, true);
+    await salto(.45);
+    vida();
+  }
+  async function vida(){
+    const acciones = [saluda, () => salto(.7), async () => { await salto(.5); await salto(.5); }, bailecito, saluda, () => salto(1, true)];
+    let i = 0;
+    for (;;){
+      await espera(2.6 + Math.random() * 2.4);
+      if (modo === "quieto" && y === 0) await acciones[i++ % acciones.length]();
+    }
+  }
+
+  /* el cuadro */
+  function cuadro(ahora){
+    if (!activo){ corriendo = false; return; }
+    const dt = Math.min(1 / 30, antes ? (ahora - antes) / 1000 : 0); antes = ahora; t += dt;
+    for (let i = timers.length - 1; i >= 0; i--) if (t >= timers[i].en){ const r = timers[i].r; timers.splice(i, 1); r(); }
+
+    // avanzar: acelera, y frena justo para quedar en su lugar
+    if (modo === "corre"){
+      vx = Math.min(vmax, vx + vmax * 2.2 * dt); x += vx * dt;
+      if (-x <= vx * vx / (2 * freno)){ modo = "frena"; freno = vx * vx / (2 * Math.max(1, -x)); ponPose("frena"); }
+    } else if (modo === "frena"){
+      vx = Math.max(0, vx - freno * dt); x = Math.min(0, x + vx * dt);
+      if (t - ultimoPolvo > .045){ polvo(1, -1); ultimoPolvo = t; }
+      if (vx <= 1 || x >= 0){ x = 0; vx = 0; modo = "quieto"; ponPose("quieto"); aplasta.v = -3; const r = alFrenar; alFrenar = null; r && r(); }
+    }
+    // gravedad
+    if (vy !== 0 || y > 0){
+      vy -= g * dt; y += vy * dt;
+      if (y <= 0){ y = 0; vy = 0; aterriza(); }
+      else aplasta.t = vy > 0 ? 1.08 : .97;
+    }
+
+    corre.t = modo === "corre" ? 1 : 0;
+    inclina.t = (modo === "corre" ? 13 : modo === "frena" ? -22 : 0)
+      + baile.x * Math.sin(t * Math.PI * 3.4) * 11 + mira.x + (y > 0 ? -vy / g * 14 : 0)
+      + (modo === "quieto" ? Math.sin(t * 1.3) * 2.2 : 0);   // en reposo se mece apenas
+    [inclina, aplasta, corre, ola, baile, mira, ...pose].forEach(r => paso(r, dt));
+
+    // ciclo de carrera: la frecuencia sube con la velocidad
+    fase += dt * Math.PI * 2 * (1.1 + 4.6 * corre.x);
+    const s = Math.sin(fase), c = corre.x, respira = Math.sin(t * 2.3);
+    const ang = [
+      pose[0].x - s * 34 * c + respira * 7 * (1 - c) + ola.x * (-46 + Math.sin(t * Math.PI * 6.4) * 30) + baile.x * Math.sin(t * Math.PI * 3.4) * 26,
+      pose[1].x + s * 34 * c - respira * 7 * (1 - c) + baile.x * Math.sin(t * Math.PI * 3.4 + 1) * 26,
+      pose[2].x + s * 42 * c + Math.sin(t * 1.3) * 3 * (1 - c),
+      pose[3].x - s * 42 * c - Math.sin(t * 1.3) * 3 * (1 - c)
+    ];
+    const bob = Math.abs(Math.cos(fase)) * W * .07 * c + baile.x * Math.abs(Math.sin(t * Math.PI * 3.4)) * W * .05;
+
+    mov.style.transform = `translate3d(${x}px,0,0)`;
+    cuerpo.style.transform = `translate3d(0,${-(y + bob)}px,0) rotate(${inclina.x}deg) scale(${2 - aplasta.x},${aplasta.x})`;
+    cara.style.transform = `scale(${1 - respira * .012},${1 + respira * .018})`;
+    pieza.forEach((p, i) => p.style.transform = `rotate(${ang[i]}deg)`);
+    const lejos = Math.min(1, (y + bob) / (W * .9));
+    sombra.style.transform = `translate3d(${x}px,0,0) scale(${1 - lejos * .5})`;
+    sombra.style.opacity = 1 - lejos * .6;
+    requestAnimationFrame(cuadro);
+  }
+  const arrancar = () => { if (!corriendo && activo){ corriendo = true; antes = 0; requestAnimationFrame(cuadro); } };
+
+  // se duerme cuando la portada no se ve o la pestaña está oculta
+  new IntersectionObserver(es => { activo = es[0].isIntersecting && !document.hidden; arrancar(); }).observe($(".hero"));
+  document.addEventListener("visibilitychange", () => { activo = !document.hidden; arrancar(); });
+  // se inclina un poco hacia el cursor
+  addEventListener("pointermove", e => {
+    const r = ex.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2);
+    mira.t = Math.max(-7, Math.min(7, dx / 60));
+  }, { passive:true });
+  ex.addEventListener("click", () => { if (modo === "quieto" && y === 0) salto(1.2, true); });
+  addEventListener("resize", () => { W = ex.offsetWidth; g = W * 14; });
+
+  arrancar();
+  setTimeout(entrada, 550);
+})();
+
+/* ---------- otra idea ---------- */
+$("#otra").addEventListener("click", () => {
+  ["idea","porQueAhora","cienAnos","borradorEnlace"].forEach(n => form.elements[n].value = "");
+  quitarArchivo("borrador");
+  medir(); avance(); $("#sheet").classList.remove("sent");
+  setTimeout(() => form.elements.idea.focus(), 50);
+});
+
+/* ---------- borrador local ---------- */
+function guardar(){ try { const o = {}; CAMPOS.forEach(n => o[n] = val(n)); localStorage.setItem(CONFIG.CLAVE_LOCAL, JSON.stringify(o)); } catch {} }
+function borrar(){ try { localStorage.removeItem(CONFIG.CLAVE_LOCAL); } catch {} }
+(function restaurar(){
+  let o; try { o = JSON.parse(localStorage.getItem(CONFIG.CLAVE_LOCAL) || "null"); } catch {}
+  if (!o) return;
+  CAMPOS.forEach(n => {
+    const el = form.elements[n]; if (!el || !o[n]) return;
+    if (el instanceof RadioNodeList){ const r = $(`input[name="${n}"][value="${CSS.escape(o[n])}"]`); if (r) r.checked = true; }
+    else el.value = o[n];
+  });
+  $("#susNo").classList.toggle("on", val("suscrito") === "no");
+})();
+medir(); avance();
+</script>
+</body>
+</html>
